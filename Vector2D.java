@@ -43,4 +43,10 @@ public class Vector2D {
         double divide = this.dotProduct(vector2) / vector2.dotProduct(vector2);
         return new Vector2D(vector2.x * divide, vector2.y * divide);
     }
+
+    public void normalize(){
+        double length = this.length();
+        this.y = y/length;
+        this.x = x/length;
+    }
 }

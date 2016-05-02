@@ -73,39 +73,47 @@ public class Bounce extends Animation {
                         if (!(contactList.containsKey(ball) && contactList.get(ball).contains(ball2)) && !(contactList.containsKey(ball2) && contactList.get(ball2).contains(ball))) {
 
                             //gör krock
-                            Vector2D centerVector = new Vector2D(ball2.X-ball.X, ball2.Y - ball.Y);
+
+                            //skapar vektor mellan center på bollarna
+                            Vector2D centerVector = new Vector2D(ball.X-ball2.X, ball.Y - ball2.Y);
+                            centerVector.normalize();
 
                             Vector2D ball1Vector = new Vector2D(ball.Vx, ball.Vy);
-                            Vector2D ball1Projected = centerVector.project(ball1Vector);
-                            //Vector2D ball1Projected = ball1Vector.project(centerVector);
+                            //Vector2D ball1Projected = centerVector.project(ball1Vector);
 
                             Vector2D ball2Vector = new Vector2D(ball2.Vx, ball2.Vy);
-                            Vector2D ball2Projected = centerVector.project(ball2Vector);
-                            //Vector2D ball2Projected = ball2Vector.project(centerVector);
+                            //Vector2D ball2Projected = centerVector.project(ball2Vector);
 
+                            Vector2D tangent = new Vector2D(-(centerVector.y), centerVector.x);
 
-                            Vector2D temp1 = ball1Projected.copy();
-                            temp1.scalarMult((ball.weight-ball2.weight)/(ball.weight + ball2.weight));
-                            Vector2D temp2 = ball2Projected.copy();
-                            temp2.scalarMult(2*ball2.weight/(ball.weight+ball2.weight));
+                            //Vector2D ball1Tangent = tangent.project(ball1Vector);
+                            //Vector2D ball2Tangent = tangent.project(ball2Vector);
 
-                            Vector2D ball1After = new Vector2D(temp1.x+temp2.x,temp1.y+temp2.y );
+                            double ball1normal = ball1Vector.dotProduct(centerVector);
+                            double ball2normal = ball2Vector.dotProduct(centerVector);
+                            double ball1tangent = ball1Vector.dotProduct(tangent);
+                            double ball2tangent = ball2Vector.dotProduct(tangent);
 
-                            temp1 = ball2Projected.copy();
-                            temp1.scalarMult((ball2.weight-ball.weight)/(ball.weight + ball2.weight));
-                            temp2 = ball1Projected.copy();
-                            temp2.scalarMult(2*ball.weight/(ball.weight+ball2.weight));
+                            double ball1VelocityNormal = (ball1normal * (ball.weight - ball2.weight) + 2 * ball2.weight * ball2normal) / (ball.weight + ball2.weight);
+                            double ball2VelocityNormal = (ball2normal * (ball2.weight - ball.weight) + 2 * ball.weight * ball1normal) / (ball.weight + ball2.weight);
 
-                            Vector2D ball2After = new Vector2D(temp1.x+temp2.x,temp1.y+temp2.y );
+                            Vector2D ball1NewNormal = centerVector.copy();
+                            ball1NewNormal.scalarMult(ball1VelocityNormal);
 
-                            //ball2After = ball2Vector.project(ball2After);
-                            //ball1After = ball1Vector.project(ball1After);
+                            Vector2D ball2NewNormal = centerVector.copy();
+                            ball2NewNormal.scalarMult(ball2VelocityNormal);
 
-                            ball.Vx = ball1Vector.x + ball1After.x;
-                            ball.Vy = ball2Vector.y + ball1After.y;
+                            Vector2D ball1TangentVec = centerVector.copy();
+                            ball1TangentVec.scalarMult(ball1tangent);
 
-                            ball2.Vx = ball2Vector.x + ball2After.x;
-                            ball2.Vy = ball2Vector.y + ball2After.y;
+                            Vector2D ball2TangentVec = centerVector.copy();
+                            ball2TangentVec.scalarMult(ball2tangent);
+
+                            ball.Vx = ball1NewNormal.x + ball1TangentVec.x;
+                            ball.Vy = ball1NewNormal.y + ball1TangentVec.y;
+
+                            ball2.Vx = ball2NewNormal.x + ball2TangentVec.x;
+                            ball2.Vy = ball2NewNormal.y + ball2TangentVec.y;
 
                             //Lägger till krock
                             System.out.println("Krock mellan " + i + "och " + j);
@@ -186,3 +194,19 @@ public class Bounce extends Animation {
         return fact;
     }
                 */
+
+/*
+                            Vector2D temp1 = ball1Projected.copy();
+                            temp1.scalarMult((ball.weight-ball2.weight)/(ball.weight + ball2.weight));
+                            Vector2D temp2 = ball2Projected.copy();
+                            temp2.scalarMult(2*ball2.weight/(ball.weight+ball2.weight));
+
+                            Vector2D ball1After = new Vector2D(temp1.x+temp2.x,temp1.y+temp2.y);
+
+                            temp1 = ball2Projected.copy();
+                            temp1.scalarMult((ball2.weight-ball.weight)/(ball.weight + ball2.weight));
+                            temp2 = ball1Projected.copy();
+                            temp2.scalarMult(2*ball.weight/(ball.weight+ball2.weight));
+
+                            Vector2D ball2After = new Vector2D(temp1.x+temp2.x,temp1.y+temp2.y );
+                            */
