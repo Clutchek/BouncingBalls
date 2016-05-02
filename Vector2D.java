@@ -12,7 +12,8 @@ public class Vector2D {
 
     //returns the dot product between two vectors
     public double dotProduct(Vector2D vector2){
-        return this.length() * vector2.length() * this.angle(vector2);
+        //return this.length() * vector2.length() * this.angle(vector2);
+        return this.x*vector2.x+this.y*vector2.y;
     }
 
     public double length(){
@@ -22,9 +23,24 @@ public class Vector2D {
     //computes the angle between this and another vector
     public double angle(Vector2D vector2 ){
         double angle = Math.atan2(vector2.y -y, vector2.x - x);
-        if(angle < 0){
-            angle = angle + Math.PI;
-        }
         return angle;
+    }
+
+    public void scalarMult(double scalar){
+        this.x = x*scalar;
+        this.y = y*scalar;
+    }
+
+    public Vector2D copy(){
+        return new Vector2D(x,y);
+    }
+
+    public Vector2D project(Vector2D vector2){
+        /*
+        double scalar = this.dotProduct(vector2)/Math.pow(this.length(),2);
+        return new Vector2D(scalar*vector2.x,scalar*vector2.y);
+        */
+        double divide = this.dotProduct(vector2) / vector2.dotProduct(vector2);
+        return new Vector2D(vector2.x * divide, vector2.y * divide);
     }
 }

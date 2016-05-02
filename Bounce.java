@@ -22,8 +22,8 @@ public class Bounce extends Animation {
 
         balls = new ArrayList<Ball>();
         //adding balls
-        Ball ball1 = new Ball(3,2,2, 50, Color.red, 20 );
-        Ball ball2 = new Ball(8,2,2, 50, Color.blue,20);
+        Ball ball1 = new Ball(3,2,2, 50, Color.red, 0.5 );
+        Ball ball2 = new Ball(8,2,2, 50, Color.blue,0.5);
         balls.add(ball1);
         balls.add(ball2);
 
@@ -75,10 +75,37 @@ public class Bounce extends Animation {
                             //gör krock
                             Vector2D centerVector = new Vector2D(ball2.X-ball.X, ball2.Y - ball.Y);
 
+                            Vector2D ball1Vector = new Vector2D(ball.Vx, ball.Vy);
+                            Vector2D ball1Projected = centerVector.project(ball1Vector);
+                            //Vector2D ball1Projected = ball1Vector.project(centerVector);
+
+                            Vector2D ball2Vector = new Vector2D(ball2.Vx, ball2.Vy);
+                            Vector2D ball2Projected = centerVector.project(ball2Vector);
+                            //Vector2D ball2Projected = ball2Vector.project(centerVector);
 
 
+                            Vector2D temp1 = ball1Projected.copy();
+                            temp1.scalarMult((ball.weight-ball2.weight)/(ball.weight + ball2.weight));
+                            Vector2D temp2 = ball2Projected.copy();
+                            temp2.scalarMult(2*ball2.weight/(ball.weight+ball2.weight));
 
+                            Vector2D ball1After = new Vector2D(temp1.x+temp2.x,temp1.y+temp2.y );
 
+                            temp1 = ball2Projected.copy();
+                            temp1.scalarMult((ball2.weight-ball.weight)/(ball.weight + ball2.weight));
+                            temp2 = ball1Projected.copy();
+                            temp2.scalarMult(2*ball.weight/(ball.weight+ball2.weight));
+
+                            Vector2D ball2After = new Vector2D(temp1.x+temp2.x,temp1.y+temp2.y );
+
+                            //ball2After = ball2Vector.project(ball2After);
+                            //ball1After = ball1Vector.project(ball1After);
+
+                            ball.Vx = ball1Vector.x + ball1After.x;
+                            ball.Vy = ball2Vector.y + ball1After.y;
+
+                            ball2.Vx = ball2Vector.x + ball2After.x;
+                            ball2.Vy = ball2Vector.y + ball2After.y;
 
                             //Lägger till krock
                             System.out.println("Krock mellan " + i + "och " + j);
