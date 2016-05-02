@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class Bounce extends Animation {
 
-    protected double X, Y, Vx, Vy, deltaT, pixelsPerMeter;
-    protected int radius, firstTime = 1, pixelX, pixelY;
+    protected double deltaT, pixelsPerMeter;
+    protected int firstTime = 1, pixelX, pixelY;
     protected double gravity;
     protected Map<Ball, List<Ball>> contactList;
 
@@ -49,17 +49,12 @@ public class Bounce extends Animation {
         //g.fillRect(0,0,d.width,d.height); // slower?
         for(int i = 0; i < balls.size(); i++) {
             Ball ball = balls.get(i);
-            X = ball.X;
-            Y = ball.Y;
-            pixelX = (int) (pixelsPerMeter * X);
-            pixelY = (int) (pixelsPerMeter * Y);
-            radius = ball.radius;
-            Vx = ball.Vx;
-            Vy = ball.Vy;
+            pixelX = (int) (pixelsPerMeter * ball.X);
+            pixelY = (int) (pixelsPerMeter * ball.Y);
 
 
             g.setColor(Color.WHITE);
-            g.fillOval(pixelX - radius, pixelY - radius, radius * 2, radius * 2);
+            g.fillOval(pixelX - ball.radius, pixelY - ball.radius, ball.radius * 2, ball.radius * 2);
 
             //collision
             for (int j = 0; j < balls.size(); j++) {
@@ -103,17 +98,17 @@ public class Bounce extends Animation {
                             Vector2D ball2NewNormal = centerVector.copy();
                             ball2NewNormal.scalarMult(ball2VelocityNormal);
 
-                            Vector2D ball1TangentVec = centerVector.copy();
+                            Vector2D ball1TangentVec = tangent.copy();
                             ball1TangentVec.scalarMult(ball1tangent);
 
-                            Vector2D ball2TangentVec = centerVector.copy();
+                            Vector2D ball2TangentVec = tangent.copy();
                             ball2TangentVec.scalarMult(ball2tangent);
 
                             ball.Vx = ball1NewNormal.x + ball1TangentVec.x;
                             ball.Vy = ball1NewNormal.y + ball1TangentVec.y;
 
-                            ball2.Vx = ball2NewNormal.x + ball2TangentVec.x;
-                            ball2.Vy = ball2NewNormal.y + ball2TangentVec.y;
+                            ball.Vx = ball2NewNormal.x + ball2TangentVec.x;
+                            ball.Vy = ball2NewNormal.y + ball2TangentVec.y;
 
                             //Lägger till krock
                             System.out.println("Krock mellan " + i + "och " + j);
@@ -138,31 +133,26 @@ public class Bounce extends Animation {
             }//for-loop end
 
             //edge detection
-            if (pixelX < radius || pixelX > d.width - radius) {
-                Vx = -Vx;
+            if (pixelX < ball.radius || pixelX > d.width - ball.radius) {
+                ball.Vx = -ball.Vx;
             }
-            if (pixelY > d.height - radius) {
-                if(Vy > 0 ){
-                    Vy = -Vy;
+            if (pixelY > d.height - ball.radius) {
+                if(ball.Vy > 0 ){
+                    ball.Vy = -ball.Vy;
                 }
             }else{
                 //gravity
-                Vy += gravity * deltaT;
+                ball.Vy += gravity * deltaT;
             }
-            Y += (Vy) * deltaT;
-            X += Vx * deltaT;
+            ball.Y += (ball.Vy) * deltaT;
+            ball.X += ball.Vx * deltaT;
 
-            pixelX = (int) (pixelsPerMeter * X);
-            pixelY = (int) (pixelsPerMeter * Y);
+            pixelX = (int) (pixelsPerMeter * ball.X);
+            pixelY = (int) (pixelsPerMeter * ball.Y);
 
             g.setColor(ball.color);
-            g.fillOval(pixelX - radius, pixelY - radius, radius * 2, radius * 2);
+            g.fillOval(pixelX - ball.radius, pixelY - ball.radius, ball.radius * 2, ball.radius * 2);
 
-
-            ball.Vx = Vx;
-            ball.Vy = Vy;
-            ball.X = X;
-            ball.Y = Y;
         }
     }
 
