@@ -25,9 +25,11 @@ public class DummyModel implements IBouncingBallsModel {
         balls = new ArrayList<Ball>();
 		Ball ball1 = new Ball(3,8,2.3,1,1,0.5);
 		Ball ball2 = new Ball(6,8,2.3,1,1,0.5);
+        Ball ball3 = new Ball(9,8,2.3,1,1,0.5);
 
 		balls.add(ball1);
 		balls.add(ball2);
+        balls.add(ball3);
 
         contactList = new HashMap<Ball, List<Ball>>();
 
@@ -44,9 +46,8 @@ public class DummyModel implements IBouncingBallsModel {
                     double centerDistance = centerVector.length();
                     if(centerDistance <= (ball1.radius + ball2.radius)){
                         if (!(contactList.containsKey(ball1) && contactList.get(ball1).contains(ball2)) && !(contactList.containsKey(ball2) && contactList.get(ball2).contains(ball1))) {
-                            System.out.println("Krock");
                             applyGravity = false;
-                            
+
                             centerVector.normalize();
 
                             Vector2D ball1Vector = new Vector2D(ball1.Vx, ball1.Vy);
