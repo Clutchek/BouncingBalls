@@ -45,6 +45,48 @@ public class DummyModel implements IBouncingBallsModel {
                     if(centerDistance <= (ball1.radius + ball2.radius)){
                         if (!(contactList.containsKey(ball1) && contactList.get(ball1).contains(ball2)) && !(contactList.containsKey(ball2) && contactList.get(ball2).contains(ball1))) {
                             System.out.println("Krock");
+                            applyGravity = false;
+                            
+                            centerVector.normalize();
+
+                            Vector2D ball1Vector = new Vector2D(ball1.Vx, ball1.Vy);
+                            //Vector2D ball1Projected = centerVector.project(ball1Vector);
+
+                            Vector2D ball2Vector = new Vector2D(ball2.Vx, ball2.Vy);
+                            //Vector2D ball2Projected = centerVector.project(ball2Vector);
+
+                            Vector2D tangent = new Vector2D(-(centerVector.y), centerVector.x);
+
+                            //Vector2D ball1Tangent = tangent.project(ball1Vector);
+                            //Vector2D ball2Tangent = tangent.project(ball2Vector);
+
+                            double ball1normal = ball1Vector.dotProduct(centerVector);
+                            double ball2normal = ball2Vector.dotProduct(centerVector);
+                            double ball1tangent = ball1Vector.dotProduct(tangent);
+                            double ball2tangent = ball2Vector.dotProduct(tangent);
+
+                            double ball1VelocityNormal = (ball1normal * (ball1.weight - ball2.weight) + 2 * ball2.weight * ball2normal) / (ball1.weight + ball2.weight);
+                            double ball2VelocityNormal = (ball2normal * (ball2.weight - ball1.weight) + 2 * ball1.weight * ball1normal) / (ball1.weight + ball2.weight);
+
+                            Vector2D ball1NewNormal = centerVector.copy();
+                            ball1NewNormal.scalarMult(ball1VelocityNormal);
+
+                            Vector2D ball2NewNormal = centerVector.copy();
+                            ball2NewNormal.scalarMult(ball2VelocityNormal);
+
+                            Vector2D ball1TangentVec = tangent.copy();
+                            ball1TangentVec.scalarMult(ball1tangent);
+
+                            Vector2D ball2TangentVec = tangent.copy();
+                            ball2TangentVec.scalarMult(ball2tangent);
+
+                            ball1.Vx = ball1NewNormal.x + ball1TangentVec.x;
+                            ball1.Vy = ball1NewNormal.y + ball1TangentVec.y;
+
+                            ball2.Vx = ball2NewNormal.x + ball2TangentVec.x;
+                            ball2.Vy = ball2NewNormal.y + ball2TangentVec.y;
+
+
                             if (contactList.containsKey(ball1)) {
                                 contactList.get(ball1).add(ball2);
                             } else {
