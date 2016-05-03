@@ -68,7 +68,7 @@ public class DummyModel implements IBouncingBallsModel {
                             double ball1VelocityNormal = (ball1normal * (ball1.weight - ball2.weight) + 2 * ball2.weight * ball2normal) / (ball1.weight + ball2.weight);
                             double ball2VelocityNormal = (ball2normal * (ball2.weight - ball1.weight) + 2 * ball1.weight * ball1normal) / (ball1.weight + ball2.weight);
 
-                            //multiply our calculated values to our projected vectors
+                            //multiply our calculated values to get our projected vectors after collision
                             Vector2D ball1NewNormal = centerVector.copy();
                             ball1NewNormal.scalarMult(ball1VelocityNormal);
 
@@ -81,7 +81,7 @@ public class DummyModel implements IBouncingBallsModel {
                             Vector2D ball2TangentVec = tangent.copy();
                             ball2TangentVec.scalarMult(ball2tangent);
 
-                            //add the values from the velocity vectors projected tangent and the new velocities in the centerdirection after the collision
+                            //add the values from the velocity vectors projected to the tangent and the new velocities in the center direction after the collision
                             ball1.Vx = ball1NewNormal.x + ball1TangentVec.x;
                             ball1.Vy = ball1NewNormal.y + ball1TangentVec.y;
 
